@@ -1,0 +1,96 @@
+fullnameOverride: acme
+
+replicaCount: 1
+
+profile: default
+
+namespace: default
+
+image:
+  repository: docker-registry.127.0.0.1.nip.io:30500/sample-library
+  tag: latest
+  pullPolicy: Always
+
+dockerRegistrySecret: regcred
+
+labels: {}
+annotations: {}
+
+pod:
+  labels: {}
+  annotations: {}
+
+pdb: {}
+
+service:
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 3000
+  annotations: {}
+  labels: {}
+
+ingress:
+  enabled: true
+  subdomain: acme
+  basedomain: 127.0.0.1.nip.io
+  hosts: {}
+  # hosts:
+  #   - acme.opsnow.com
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
+    # nginx.ingress.kubernetes.io/use-regex: "true"
+    # ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
+  labels: {}
+
+autoscaling:
+  enabled: true
+  min: 1
+  max: 5
+  cpu: 80
+  mem: 80
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 120m
+    memory: 153Mi
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 3
+  periodSeconds: 10
+  failureThreshold: 3
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 3
+  periodSeconds: 10
+  failureThreshold: 3
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env: {}
+  # - name: MESSAGE
+  #   value: "hello world"
+
+configmap:
+  enabled: false
+  data: {}
+    # MESSAGE: "hello world"
+
+secret:
+  enabled: false
+  data: {}
+    # SECRET: "c2VjcmV0IHdvcmxkCg=="
